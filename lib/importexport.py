@@ -52,11 +52,15 @@ class exPort_sfnfo:
             if level and (not elem.tail or not elem.tail.strip()):
                 elem.tail = i
 
-    def buildTree(self, t, st, p, f):
+    def buildTree(self, t, st, p, y, tg, f):
         if st == 'None':
             st = ""
         if p == 'None':
             p = ""
+        if y == 'None':
+            y = ""
+        if tg == 'None':
+            tg = ""			
         self.header = ET.Element('specialfeatures')
         self.title = ET.SubElement(self.header, 'title')
         self.title.text = '{}'.format(t)
@@ -64,9 +68,13 @@ class exPort_sfnfo:
         self.sorttitle.text = '{}'.format(st)
         self.plot = ET.SubElement(self.header, 'plot')
         self.plot.text = '{}'.format(p)
+        self.year = ET.SubElement(self.header, 'year')
+        self.year.text = '{}'.format(y)		
+        self.tagline = ET.SubElement(self.header, 'tagline')
+        self.tagline.text = '{}'.format(tg)	
         self.indent(self.header)
         self.sfnfo = ET.ElementTree(self.header)
-        self.sfnfo.write(f, xml_declaration=True, encoding='utf-8', method="xml")
+        self.sfnfo.write(f, xml_declaration=True, encoding='UTF-8', method="xml")
 
     def updateTree(self, path, tag, text):
         initTree(path)
@@ -83,9 +91,9 @@ class exPort_sfnfo:
                 bgdu(int(self.pct), lang(30000), "{0} {1}{2}{3}".format(lang(30064), self.cst, lang(30052), len(iterate)))
                 try:
                     if mysql == 'true':
-                        self.buildTree(self.item['title'], self.item['sorttitle'], self.item['plot'], os.path.splitext(self.item['bpath'])[0]+'.sfnfo')
+                        self.buildTree(self.item['title'], self.item['sorttitle'], self.item['plot'], self.item['year'], self.item['tagline'], os.path.splitext(self.item['bpath'])[0]+'.sfnfo')
                     else:
-                        self.buildTree(self.item[1], self.item[3], self.item[4], os.path.splitext(self.item[2])[0]+'.sfnfo')
+                        self.buildTree(self.item[1], self.item[3], self.item[4], self.item[6], self.item[7], os.path.splitext(self.item[2])[0]+'.sfnfo')
                 except:
                     error('Could not write to file directory, check your write permissions')
                 self.cst += 1
@@ -100,12 +108,12 @@ class exPort_sfnfo:
                 else:
                     if xbmcvfs.exists(os.path.splitext(self.item[2])[0]+'.sfnfo') == 0:
                         self.pct = float(self.cst)/float(len(iterate))*100
-                    bgdu(int(self.pct), lang(30000), "{0} {1}{2}{3}".format(lang(30064), self.cst, lang(30052), len(iterate)))
+                    bgdu(int(self.pct), lang(30000), "{0} {1}{2}{3}{6)}{7)}".format(lang(30064), self.cst, lang(30052), len(iterate)))
                     try:
                         if mysql == 'true':
-                            self.buildTree(self.item['title'], self.item['sorttitle'], self.item['plot'], os.path.splitext(self.item['bpath'])[0]+'.sfnfo')
+                            self.buildTree(self.item['title'], self.item['sorttitle'], self.item['plot'], self.item['year'], self.item['tagline'], os.path.splitext(self.item['bpath'])[0]+'.sfnfo')
                         else:
-                            self.buildTree(self.item[1], self.item[3], self.item[4], os.path.splitext(self.item[2])[0]+'.sfnfo')
+                            self.buildTree(self.item[1], self.item[3], self.item[4], self.item[6], self.item[7], os.path.splitext(self.item[2])[0]+'.sfnfo')
                     except:
                         error('Could not write to file directory, check your write permissions')
                     self.cst += 1
@@ -117,7 +125,7 @@ class imPort_sfnfo:
         if self.checkout(path) == 1:
             initTree(self.path)
             self.vars()
-            return {'title': self.title, 'path': path, 'sorttitle': self.sorttitle, 'plot': self.plot}
+            return {'title': self.title, 'path': path, 'sorttitle': self.sorttitle, 'plot': self.plot, 'year': self.year, 'tagline': self.tagline}
         else:
             return None
 
@@ -125,7 +133,9 @@ class imPort_sfnfo:
         self.title = root.find('title').text
         self.sorttitle = root.find('sorttitle').text
         self.plot = root.find('plot').text
-
+        self.year = root.find('year').text
+        self.tagline = root.find('tagline').text		
+		
     def checkout(self, path):
         self.path = os.path.splitext(path)[0]
         self.path = self.path+'.sfnfo'

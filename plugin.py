@@ -225,6 +225,8 @@ class Views:
             self.t = self.item['title']
             self.p = self.item['plot']
             self.st = self.item['sorttitle']
+            self.y = self.item['year']
+            self.tg = self.item['tagline']
             if os.path.splitext(self.f)[1] == '.bdmv':
                 self.litem.setArt({'fanart': self.item['art'].get('fanart'), 'poster': self.item['art'].get('poster')})
             elif os.path.splitext(self.f)[1] == '.IFO':
@@ -234,7 +236,7 @@ class Views:
             else:
                 self.litem.setArt({'fanart': self.item['art'].get('fanart'), 'thumb': self.item['art'].get('thumb')})
             self.litem.setCast(self.item['cast'])
-            self.litem.setInfo('video', {'title': self.t, 'plot': self.p, 'path': self.f, 'sorttitle': self.st})
+            self.litem.setInfo('video', {'title': self.t, 'plot': self.p, 'path': self.f, 'sorttitle': self.st, 'year': self.item['year'], 'tagline': self.item['tagline']})
             self.is_folder = False
             self.litem.addContextMenuItems([('Manage...', 'RunScript(plugin.video.specialfeatures,editinfo)',)])
             self.litem.setContentLookup(True)

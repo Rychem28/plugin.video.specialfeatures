@@ -307,7 +307,7 @@ class dbEnterExit:
             for self.bitem in self.item['bonus']:
                 self.entry = self.sql.exeCute('fw_special2', self.bitem['path'], 'one')
                 if self.entry is None:
-                    self.input = (self.item['file'], self.bitem['title'], self.bitem['path'], self.bitem['sorttitle'], self.bitem.get('plot'), self.bitem.get('thumb'))
+                    self.input = (self.item['file'], self.bitem['title'], self.bitem['path'], self.bitem['sorttitle'], self.bitem.get('plot'), self.bitem.get('thumb'),  self.bitem.get('year'), self.bitem.get('tagline'))
                     self.sql.exeCute('in_special', self.input, 'com')
                     # subprocess.call(['ffmpeg','-i',self.bitem['path'], '-ss', '00:00:00.000', '-vframes', '1', addir+self.bitem['title']+'.png'])
                     # self.thumb = resultFILTER().build_video_thumbnail_path(self.item['path'])
@@ -566,7 +566,7 @@ class dbEnterExit:
                             self.cast.append(self.actor)
                         self.art.update({'thumb': self.item['thumb']})
                         self.input = {'file': self.item['file'], 'title': self.item['title'], 'path': self.item['bpath'], 'sorttitle': self.item['sorttitle'],
-                                      'plot': self.item['plot'], 'art': self.art, 'cast': self.cast
+                                      'plot': self.item['plot'], 'year': self.item['year'], 'tagline': self.item['tagline'], 'art': self.art, 'cast': self.cast
                                       }
                     else:
                         self.art = {}
@@ -586,7 +586,7 @@ class dbEnterExit:
                             self.cast.append(self.actor)
                         self.art.update({'thumb': self.item[5]})
                         self.input = {'file': self.item[0], 'title': self.item[1], 'path': self.item[2], 'sorttitle': self.item[3],
-                                      'plot': self.item[4], 'art': self.art, 'cast': self.cast
+                                      'plot': self.item[4], 'year': self.item[6], 'tagline': self.item[7], 'art': self.art, 'cast': self.cast
                                       }
                     fliList.append(self.input)
             return fliList
@@ -595,15 +595,15 @@ class dbEnterExit:
                 self.entry = self.sql.exeCute('fw_special3', item, 'allv')
                 for self.item in self.entry:
                     if mysql == 'true':
-                        self.result = {'file': self.item['file'], 'title': self.item['title'], 'path': self.item['bpath'], 'sorttitle': self.item['sorttitle'], 'plot': self.item['plot']}
+                        self.result = {'file': self.item['file'], 'title': self.item['title'], 'path': self.item['bpath'], 'sorttitle': self.item['sorttitle'], 'plot': self.item['plot'], 'year': self.item['year'], 'tagline': self.item['tagline']}
                     else:
-                        self.result = {'file': self.item[0], 'title': self.item[1], 'path': self.item[2], 'sorttitle': self.item[3], 'plot': self.item[4]}
+                        self.result = {'file': self.item[0], 'title': self.item[1], 'path': self.item[2], 'sorttitle': self.item[3], 'plot': self.item[4], 'year': self.item[6], 'tagline': self.item[7]}
                 return self.result
             except:
                 error("Cant get result")
                 quit()
         elif category == 'smallup':
-            self.ivar = (item.get('title'), item.get('sorttitle'), item.get('plot'), item.get('file'), item.get('path'))
+            self.ivar = (item.get('title'), item.get('sorttitle'), item.get('plot'), item.get('file'), item.get('path'), item.get('year'), item.get('tagline'))
             self.test = (item['path'],)
             self.sql.exeCute('up_special', self.ivar, 'com')
         elif category == 'export':
@@ -662,7 +662,7 @@ class dbEnterExit:
             self.plot = dialog.input(lang(30000), defaultt=self.bonus['plot'], type=xbmcgui.INPUT_ALPHANUM)
         elif self.choice == -1:
             quit()
-        self.update = {'file': self.bonus['file'], 'title': self.title, 'path': self.bonus['path'], 'sorttitle': self.sorttitle, 'plot': self.plot}
+        self.update = {'file': self.bonus['file'], 'title': self.title, 'path': self.bonus['path'], 'sorttitle': self.sorttitle, 'plot': self.plot, 'year': self.item['year'], 'tagline': self.item['tagline']}
         dbEnterExit().initDb('smallup', self.update)
         xbmc.executebuiltin('Container.Update({})'.format(xbmc.getInfoLabel('Container.FolderPath')))
         quit()
